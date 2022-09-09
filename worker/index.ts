@@ -1,7 +1,5 @@
-import { createPageRenderer } from 'vite-plugin-ssr';
+import { renderPage } from 'vite-plugin-ssr';
 import '../dist/server/importBuild.cjs';
-
-const renderPage = createPageRenderer({ isProduction: true });
 
 export default {
   async fetch(request: Request, env: any): Promise<Response> {
@@ -30,7 +28,10 @@ function isAssetUrl(url: string) {
 }
 
 async function handleSsr(url: string) {
-  const { httpResponse } = await renderPage({ url });
+  const { httpResponse } = await renderPage({
+    urlOriginal: url,
+    fetch: (...args: Parameters<typeof fetch>) => fetch(...args),
+  });
   if (httpResponse) {
     const { readable, writable } = new TransformStream();
     httpResponse.pipeToWebWritable(writable);
