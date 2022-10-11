@@ -4,14 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "NITRO_PRESET=cloudflare nuxt build",
-    "dev": "HOST=0.0.0.0 nuxt dev",
-    "serve": "HOST=0.0.0.0 miniflare --watch --debug",
-    "postinstall": "nuxt prepare"
+    "dev": "DEV=1 node worker",
+    "build:worker": "vite build --ssr src/entry-worker.jsx --outDir dist/worker"
+  },
+  "dependencies": {
+    "react": "^18.2.0"
   },
   "devDependencies": {
-    "miniflare": "^2.9.0",
-    "nuxt": "^3.0.0-rc.11"
+    "miniflare": "^2.9.0"
   },
   "engines": {
     "node": ">=16.13"
