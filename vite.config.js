@@ -1,34 +1,26 @@
 import { defineConfig } from 'vite';
+import vuePlugin from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
 
 export default defineConfig({
+  plugins: [vuePlugin(), vueJsx()],
   build: {
     minify: false,
   },
-  resolve: {
-    dedupe: ['react'],
-  },
   ssr: {
-    target: 'webworker',
-    noExternal: ['this-should-be-replaced-by-the-boolean'],
+    noExternal: /./,
   },
-  plugins: [
-    {
-      config() {
-        return {
-          ssr: {
-            noExternal: true,
-          },
-        };
+  resolve: {
+    // necessary because vue.ssrUtils is only exported on cjs modules
+    alias: [
+      {
+        find: '@vue/runtime-dom',
+        replacement: '@vue/runtime-dom/dist/runtime-dom.cjs.js',
       },
-    },
-    {
-      config() {
-        return {
-          ssr: {
-            noExternal: ['this-should-not-replace-the-boolean'],
-          },
-        };
+      {
+        find: '@vue/runtime-core',
+        replacement: '@vue/runtime-core/dist/runtime-core.cjs.js',
       },
-    },
-  ],
+    ],
+  },
 });
